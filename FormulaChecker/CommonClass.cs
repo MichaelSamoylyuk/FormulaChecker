@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using FormulaChecker.Enums;
 using FormulaChecker.Helpers;
@@ -30,8 +28,24 @@ namespace FormulaChecker
         public static void TestValueInitialization(Label label, TextBox textBox, double testValue)
         {
             label.Text = $"x={testValue}";
-            var formula = formulaForValidation.Replace("{variable}", testValue.ToString()); ;
-            textBox.Tag = StringToFormula.Eval(formula).ToString();
+
+            string tempFormula = String.Empty;
+
+            if (testValue < 0)
+            {
+                tempFormula = formulaForValidation.Replace("{variable}", "(" + testValue.ToString() + ")");
+            }
+            else
+            {
+                tempFormula = formulaForValidation.Replace("{variable}", testValue.ToString());
+            }
+
+            var tempList = StringToFormula.getTokens(tempFormula);
+            var formula = StringToFormula.getExpressionFromTokens(tempList);
+
+            var rightValue = StringToFormula.Eval(formula);
+
+            textBox.Tag = rightValue.ToString();
         }
 
         public static void GenerateTestValueList(List<double> list)
@@ -76,8 +90,17 @@ namespace FormulaChecker
                 var coefficient = random.Next(1,50);
                 var coefficientFroReplacing = "{coefficient}"+$"[{counter}]";
                 counter--;
-                formulaForValidation = formulaForValidation.Replace(coefficientFroReplacing, coefficient.ToString());
-                formulaForStudent = formulaForStudent.Replace(coefficientFroReplacing, coefficient.ToString());
+                if (coefficient < 0)
+                {
+                    formulaForValidation = formulaForValidation.Replace(coefficientFroReplacing, "(" + coefficient.ToString() + ")");
+                    formulaForStudent = formulaForStudent.Replace(coefficientFroReplacing, "(" + coefficient.ToString() + ")");
+                }
+                else
+                {
+                    formulaForValidation = formulaForValidation.Replace(coefficientFroReplacing, coefficient.ToString());
+                    formulaForStudent = formulaForStudent.Replace(coefficientFroReplacing, coefficient.ToString());
+                }    
+                
             }
         }
 
