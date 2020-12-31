@@ -16,9 +16,19 @@ namespace FormulaChecker
 		(a1, a2) => Math.Pow(a1, a2)
 		};
 
-		public static double Eval(string expression)
+		public static double Calculate (string expression)
+        {
+			var tempList = GetTokens(expression);
+			var formula = GetExpressionFromTokens(tempList);
+
+			var result = Eval(formula);
+
+			return result;
+		}
+		
+		private static double Eval(string expression)
 		{
-			var tokens = getTokens(expression);
+			var tokens = GetTokens(expression);
 			var operandList = new List<double>();
 			var operatorList = new List<string>();
 			int tokenIndex = 0;
@@ -28,7 +38,7 @@ namespace FormulaChecker
 				var token = tokens[tokenIndex];
 				if (token == "(")
 				{
-					var subExpr = getSubExpression(tokens, ref tokenIndex);
+					var subExpr = GetSubExpression(tokens, ref tokenIndex);
 					operandList.Add(Eval(subExpr));
 					continue;
 				}
@@ -66,7 +76,7 @@ namespace FormulaChecker
 			return commonResult;
 		}
 
-		private static string getSubExpression(List<string> tokens, ref int index)
+		private static string GetSubExpression(List<string> tokens, ref int index)
 		{
 			var subExpr = new StringBuilder();
 			var parenlevels = 1;
@@ -99,7 +109,7 @@ namespace FormulaChecker
 			return subExpr.ToString();
 		}
 
-		public static List<string> getTokens(string expression)
+		private static List<string> GetTokens(string expression)
 		{
 			var operators = "()^*/+-";
 			var tokens = new List<string>();
@@ -157,7 +167,7 @@ namespace FormulaChecker
 			return tokens;
 		}
 
-		public static string getExpressionFromTokens(List<string> tokens)
+		private static string GetExpressionFromTokens(List<string> tokens)
         {
 			AddBracketsForOperationPrioritization(tokens, "^");
 			AddBracketsForOperationPrioritization(tokens, "*");

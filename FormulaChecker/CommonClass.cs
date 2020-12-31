@@ -40,10 +40,7 @@ namespace FormulaChecker
                 tempFormula = formulaForValidation.Replace("{variable}", testValue.ToString());
             }
 
-            var tempList = StringToFormula.getTokens(tempFormula);
-            var formula = StringToFormula.getExpressionFromTokens(tempList);
-
-            var rightValue = StringToFormula.Eval(formula);
+            var rightValue = StringToFormula.Calculate(tempFormula);
 
             textBox.Tag = rightValue.ToString();
         }
